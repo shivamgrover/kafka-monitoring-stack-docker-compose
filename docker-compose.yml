@@ -2,7 +2,7 @@ version: '2.1'
 
 services:
   zoo1:
-    image: confluentinc/cp-zookeeper:latest
+    image: zookeeper:3.4.9
     hostname: zoo1
     ports:
       - "2181:2181"
@@ -17,7 +17,7 @@ services:
      - paritex-kakfa
 
   zoo2:
-    image: confluentinc/cp-zookeeper:latest
+    image: zookeeper:3.4.9
     hostname: zoo2
     ports:
       - "2182:2182"
@@ -32,7 +32,7 @@ services:
      - paritex-kakfa
 
   zoo3:
-    image: confluentinc/cp-zookeeper:latest
+    image: zookeeper:3.4.9
     hostname: zoo3
     ports:
       - "2183:2183"
