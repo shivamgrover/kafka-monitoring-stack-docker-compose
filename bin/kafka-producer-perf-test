@@ -23,7 +23,7 @@ echo $configDir
 DOCKER_KAFKA_OPTS=""
 DOCKER_MOUNT_SECRETS=""
 DOCKER_MOUNT_CLIENT_PROPS=""
-KAFKA_CLIENT_CONFIG="bootstrap.servers=localhost:9092"
+KAFKA_CLIENT_CONFIG="bootstrap.servers=kafka1:9092"
 
 if [ "$SECURITY_ENABLE" == "true" ]; then
 	DOCKER_KAFKA_OPTS='--env "KAFKA_OPTS=-Djava.security.auth.login.config=/etc/kafka/secrets/kafka_client_jaas.conf"'
