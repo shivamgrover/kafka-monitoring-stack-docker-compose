@@ -58,6 +58,9 @@ services:
     container_name: grafana
     depends_on:
       - prometheus
+    networks:
+     - paritex-kakfa 
+     
   prometheus:
     image: "prom/prometheus"
     ports:
@@ -66,6 +69,8 @@ services:
       - ./etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     command: "--config.file=/etc/prometheus/prometheus.yml"
     container_name: prometheus
+    networks:
+     - paritex-kakfa 
 
   jmx-kafka101:
     image: "sscaling/jmx-prometheus-exporter"
