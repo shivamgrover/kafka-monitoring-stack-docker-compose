@@ -78,6 +78,8 @@ services:
     container_name: jmx-kafka101
     depends_on:
       - kafka1
+    networks:
+     - paritex-kakfa  
 
   jmx-kafka102:
     image: "sscaling/jmx-prometheus-exporter"
@@ -90,6 +92,8 @@ services:
     container_name: jmx-kafka102
     depends_on:
       - kafka2
+    networks:
+     - paritex-kakfa  
 
   jmx-kafka103:
     image: "sscaling/jmx-prometheus-exporter"
@@ -102,6 +106,9 @@ services:
     container_name: jmx-kafka103
     depends_on:
       - kafka3
+    networks:
+     - paritex-kakfa  
+      
   kafka1:
     image: confluentinc/cp-kafka:5.5.1
     hostname: kafka1
@@ -113,6 +120,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
       KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2182,zoo3:2183"
+      KAFKA_JMX_PORT: 9992
       KAFKA_BROKER_ID: 1
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
@@ -141,6 +149,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
       KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2182,zoo3:2183"
+      KAFKA_JMX_PORT: 9993
       KAFKA_BROKER_ID: 2
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
@@ -169,6 +178,7 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: LISTENER_INTERNAL:PLAINTEXT,LISTENER_EXTERNAL:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: LISTENER_INTERNAL
       KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2182,zoo3:2183"
+      KAFKA_JMX_PORT: 9994
       KAFKA_BROKER_ID: 3
       KAFKA_LOG4J_LOGGERS: "kafka.controller=INFO,kafka.producer.async.DefaultEventHandler=INFO,state.change.logger=INFO"
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
