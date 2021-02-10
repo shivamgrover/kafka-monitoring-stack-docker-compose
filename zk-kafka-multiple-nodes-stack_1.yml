@@ -39,36 +39,42 @@ services:
 
   jmx-kafka101:
     image: "sscaling/jmx-prometheus-exporter"
+    networks:
+      - paritex-kakfa
     ports:
       - "5556:5556"
     environment:
       CONFIG_YML : "/etc/jmx_exporter/config.yml"
     volumes:
-      - ./etc/jmx_exporter/config_kafka101_1.yml:/etc/jmx_exporter/config.yml
+      - ./etc/jmx_exporter/config_kafka101.yml:/etc/jmx_exporter/config.yml
     container_name: jmx-kafka101
     depends_on:
       - kafka1
 
   jmx-kafka102:
     image: "sscaling/jmx-prometheus-exporter"
+    networks:
+      - paritex-kakfa
     ports:
       - "5557:5556"
     environment:
       CONFIG_YML : "/etc/jmx_exporter/config.yml"
     volumes:
-      - ./etc/jmx_exporter/config_kafka102_1.yml:/etc/jmx_exporter/config.yml
+      - ./etc/jmx_exporter/config_kafka102.yml:/etc/jmx_exporter/config.yml
     container_name: jmx-kafka102
     depends_on:
       - kafka2
 
   jmx-kafka103:
     image: "sscaling/jmx-prometheus-exporter"
+    networks:
+      - paritex-kakfa
     ports:
       - "5558:5556"
     environment:
       CONFIG_YML : "/etc/jmx_exporter/config.yml"
     volumes:
-      - ./etc/jmx_exporter/config_kafka103_1.yml:/etc/jmx_exporter/config.yml
+      - ./etc/jmx_exporter/config_kafka103.yml:/etc/jmx_exporter/config.yml
     container_name: jmx-kafka103
 
     depends_on:
@@ -76,6 +82,8 @@ services:
 
   zoo1:
     image: confluentinc/cp-zookeeper:latest
+    networks:
+      - paritex-kakfa
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 2181
@@ -88,6 +96,8 @@ services:
     container_name: zoo1
   zoo2:
     image: confluentinc/cp-zookeeper:latest
+    networks:
+      - paritex-kakfa
     environment:
       ZOOKEEPER_SERVER_ID: 2
       ZOOKEEPER_CLIENT_PORT: 2182
@@ -100,6 +110,8 @@ services:
     container_name: zoo2
   zoo3:
     image: confluentinc/cp-zookeeper:latest
+    networks:
+      - paritex-kakfa
     environment:
       ZOOKEEPER_SERVER_ID: 3
       ZOOKEEPER_CLIENT_PORT: 2183
@@ -120,17 +132,19 @@ services:
       - 9092:9092
       - 9992:9992
     container_name: kafka1
+    networks:
+      - paritex-kakfa
     environment:
-      KAFKA_BROKER_ID: 101
+      KAFKA_BROKER_ID: 1
       KAFKA_JMX_PORT: 9992
-      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181;zoo2:2182;zoo3:2183"
+      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:29092,PLAINTEXT_HOST://kafka1:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka1:29092
-      CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: "zoo1:2181;zoo2:2182;zoo3:2183"
+      CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'false'
 
@@ -144,18 +158,20 @@ services:
       - 9093:9093
       - 9993:9993
     container_name: kafka2
+    networks:
+      - paritex-kakfa
 
     environment:
-      KAFKA_BROKER_ID: 102
+      KAFKA_BROKER_ID: 2
       KAFKA_JMX_PORT: 9993
-      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181;zoo2:2182;zoo3:2183"
+      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka2:29093,PLAINTEXT_HOST://kafka2:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka2:29093
-      CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: "zoo1:2181;zoo2:2182;zoo3:2183"
+      CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'false'
 
@@ -169,17 +185,19 @@ services:
       - 9094:9094
       - 9994:9994
     container_name: kafka3
+    networks:
+      - paritex-kakfa
     environment:
-      KAFKA_BROKER_ID: 103
+      KAFKA_BROKER_ID: 3
       KAFKA_JMX_PORT: 9994
-      KAFKA_ZOOKEEPER_CONNECT: "zoo1:2181;zoo2:2182;zoo3:2183"
+      KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:29094,PLAINTEXT_HOST://kafka3:9094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka3:29094
-      CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: "zoo1:2181;zoo2:2182;zoo3:2183"
+      CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'false'
 
