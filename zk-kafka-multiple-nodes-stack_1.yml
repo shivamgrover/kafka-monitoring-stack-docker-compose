@@ -25,8 +25,6 @@ services:
       - ./grafana/provisioning:/etc/grafana/provisioning
       - ./grafana/dashboards:/var/lib/grafana/dashboards
     container_name: grafana
-    networks:
-      - paritex-kakfa
     depends_on:
       - prometheus
 
@@ -38,8 +36,6 @@ services:
       - ./etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     command: "--config.file=/etc/prometheus/prometheus.yml"
     container_name: prometheus
-    networks:
-      - paritex-kakfa
 
   jmx-kafka101:
     image: "sscaling/jmx-prometheus-exporter"
@@ -50,8 +46,6 @@ services:
     volumes:
       - ./etc/jmx_exporter/config_kafka101.yml:/etc/jmx_exporter/config.yml
     container_name: jmx-kafka101
-    networks:
-      - paritex-kakfa
     depends_on:
       - kafka1
 
@@ -64,8 +58,6 @@ services:
     volumes:
       - ./etc/jmx_exporter/config_kafka102.yml:/etc/jmx_exporter/config.yml
     container_name: jmx-kafka102
-    networks:
-      - paritex-kakfa
     depends_on:
       - kafka2
 
@@ -78,8 +70,7 @@ services:
     volumes:
       - ./etc/jmx_exporter/config_kafka103.yml:/etc/jmx_exporter/config.yml
     container_name: jmx-kafka103
-    networks:
-      - paritex-kakfa
+
     depends_on:
       - kafka3
 
@@ -95,9 +86,6 @@ services:
     ports:
       - 2181:2181
     container_name: zookeeper1
-    networks:
-      - paritex-kakfa
-
   zoo2:
     image: confluentinc/cp-zookeeper:latest
     environment:
@@ -110,9 +98,6 @@ services:
     ports:
       - 2182:2182
     container_name: zookeeper2
-    networks:
-      - paritex-kakfa
-
   zoo3:
     image: confluentinc/cp-zookeeper:latest
     environment:
@@ -125,9 +110,6 @@ services:
     ports:
       - 2183:2183
     container_name: zookeeper3
-    networks:
-      - paritex-kakfa
-
   kafka1:
     image: confluentinc/cp-kafka:latest
     depends_on:
@@ -138,8 +120,6 @@ services:
       - 9092:9092
       - 9992:9992
     container_name: kafka1
-    networks:
-      - paritex-kakfa
     environment:
       KAFKA_BROKER_ID: 101
       KAFKA_JMX_PORT: 9992
@@ -164,8 +144,7 @@ services:
       - 9093:9093
       - 9993:9993
     container_name: kafka2
-    networks:
-      - paritex-kakfa
+
     environment:
       KAFKA_BROKER_ID: 102
       KAFKA_JMX_PORT: 9993
@@ -190,8 +169,6 @@ services:
       - 9094:9094
       - 9994:9994
     container_name: kafka3
-    networks:
-      - paritex-kakfa
     environment:
       KAFKA_BROKER_ID: 103
       KAFKA_JMX_PORT: 9994
