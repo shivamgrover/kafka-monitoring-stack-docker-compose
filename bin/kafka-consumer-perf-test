@@ -36,9 +36,9 @@ if [ "$SECURITY_ENABLE" == "true" ]; then
 fi
 
 cmd="docker run -it ${DOCKER_MOUNT_SECRETS} ${DOCKER_MOUNT_CLIENT_PROPS} ${DOCKER_KAFKA_OPTS} \
---network=\"host\" \
+--network=\"kafka-monitoring-stack-docker-compose_paritex-kakfa\" \
 confluentinc/cp-kafka:latest \
-/usr/bin/kafka-consumer-perf-test ${KAFKA_CLIENT_CONFIG} --broker-list localhost:9092 $@"
+/usr/bin/kafka-consumer-perf-test ${KAFKA_CLIENT_CONFIG} --broker-list kafka1:9092 $@"
 
 eval $cmd;
 

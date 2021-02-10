@@ -74,58 +74,20 @@ services:
      - kafka103
 
   zk1:
-    image: zookeeper:3.4.9
+    image: confluentinc/cp-zookeeper:latest
     environment:
-      ZOO_CLIENT_PORT: 2181
-      ZOO_TICK_TIME: 2000
-      ZOO_INIT_LIMIT: 5
-      ZOO_SYNC_LIMIT: 2
-      ZOO_MY_ID: 1
-      ZOO_SERVERS: server.1=zk1:2888:3888 server.2=zk2:2888:3888 server.3=zk3:2888:3888
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      ZOOKEEPER_INIT_LIMIT: 5
+      ZOOKEEPER_SYNC_LIMIT: 2
     ports:
      - 2181:2181
-    volumes:
-      - ../zk-multiple-kafka-multiple/zoo1/data:/data
-      - ../zk-multiple-kafka-multiple/zoo1/datalog:/datalog
-    container_name: zookeeper1    
-  zk2:
-    image: zookeeper:3.4.9
-    environment:
-      ZOO_CLIENT_PORT: 2182
-      ZOO_TICK_TIME: 2000
-      ZOO_INIT_LIMIT: 5
-      ZOO_SYNC_LIMIT: 2
-      ZOO_MY_ID: 2
-      ZOO_SERVERS: server.1=zk1:2888:3888 server.2=zk2:2888:3888 server.3=zk3:2888:3888
-    ports:
-     - 2182:2182
-    volumes:
-      - ../zk-multiple-kafka-multiple/zoo2/data:/data
-      - ../zk-multiple-kafka-multiple/zoo2/datalog:/datalog
-    container_name: zookeeper2     
-  zk3:
-    image: zookeeper:3.4.9
-    environment:
-      ZOO_CLIENT_PORT: 2183
-      ZOO_TICK_TIME: 2000
-      ZOO_INIT_LIMIT: 5
-      ZOO_SYNC_LIMIT: 2
-      ZOO_MY_ID: 3
-      ZOO_SERVERS: server.1=zk1:2888:3888 server.2=zk2:2888:3888 server.3=zk3:2888:3888
-    ports:
-     - 2183:2183
-    volumes:
-      - ../zk-multiple-kafka-multiple/zoo3/data:/data
-      - ../zk-multiple-kafka-multiple/zoo3/datalog:/datalog
-    container_name: zookeeper3  
+    container_name: zookeeper1
 
   kafka101:
     image: confluentinc/cp-kafka:latest
-    hostname: kafka1
     depends_on:
       - zk1
-      - zk2
-      - zk3
     ports:
       - 9092:9092
       - 9992:9992
@@ -133,24 +95,21 @@ services:
     environment:
       KAFKA_BROKER_ID: 101
       KAFKA_JMX_PORT: 9992
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181,zookeeper2:2182,zookeeper3:2183"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka101:29092,PLAINTEXT_HOST://kafka1:9092
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka101:29092,PLAINTEXT_HOST://localhost:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka101:29092
-      CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: "zookeeper1:2181,zookeeper2:2182,zookeeper3:2183"
+      CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zookeeper1:2181
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'false'
 
   kafka102:
     image: confluentinc/cp-kafka:latest
-    hostname: kafka2
     depends_on:
       - zk1
-      - zk2
-      - zk3
     ports:
       - 9093:9093
       - 9993:9993
@@ -158,24 +117,21 @@ services:
     environment:
       KAFKA_BROKER_ID: 102
       KAFKA_JMX_PORT: 9993
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181,zookeeper2:2182,zookeeper3:2183"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka102:29093,PLAINTEXT_HOST://kafka2:9093
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka102:29093,PLAINTEXT_HOST://localhost:9093
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka102:29093
-      CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: "zookeeper1:2181,zookeeper2:2182,zookeeper3:2183"
+      CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zookeeper1:2181
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'false'
 
   kafka103:  
     image: confluentinc/cp-kafka:latest
-    hostname: kafka3
     depends_on:
       - zk1
-      - zk2
-      - zk3
     ports:
       - 9094:9094
       - 9994:9994
@@ -183,13 +139,13 @@ services:
     environment:
       KAFKA_BROKER_ID: 103
       KAFKA_JMX_PORT: 9994
-      KAFKA_ZOOKEEPER_CONNECT: "zookeeper1:2181,zookeeper2:2182,zookeeper3:2183"
-      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka103:29094,PLAINTEXT_HOST://kafka3:9094
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper1:2181
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka103:29094,PLAINTEXT_HOST://localhost:9094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka103:29094
-      CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: "zookeeper1:2181,zookeeper2:2182,zookeeper3:2183"
+      CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zookeeper1:2181
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'false'      

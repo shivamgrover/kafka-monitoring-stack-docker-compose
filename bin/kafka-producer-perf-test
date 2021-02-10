@@ -23,7 +23,7 @@ echo $configDir
 DOCKER_KAFKA_OPTS=""
 DOCKER_MOUNT_SECRETS=""
 DOCKER_MOUNT_CLIENT_PROPS=""
-KAFKA_CLIENT_CONFIG="bootstrap.servers=kafka1:9092"
+KAFKA_CLIENT_CONFIG="bootstrap.servers=kafka1:9092,kafka2:9093,kafka3:9094"
 
 if [ "$SECURITY_ENABLE" == "true" ]; then
 	DOCKER_KAFKA_OPTS='--env "KAFKA_OPTS=-Djava.security.auth.login.config=/etc/kafka/secrets/kafka_client_jaas.conf"'
@@ -36,7 +36,7 @@ KAFKA_CLIENT_CONFIG="--producer-props $KAFKA_CLIENT_CONFIG"
 echo $KAFKA_CLIENT_CONFIG
 
 cmd="docker run -it ${DOCKER_MOUNT_SECRETS} ${DOCKER_MOUNT_CLIENT_PROPS} ${DOCKER_KAFKA_OPTS} \
---network=\"host\" \
+--network=\"kafka-monitoring-stack-docker-compose_paritex-kakfa\" \
 confluentinc/cp-kafka:latest \
 /usr/bin/kafka-producer-perf-test ${KAFKA_CLIENT_CONFIG} $@"
 
