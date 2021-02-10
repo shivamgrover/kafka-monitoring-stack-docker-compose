@@ -77,6 +77,9 @@ services:
     container_name: zoo1
     ports:
       - "2181:2181"
+    volumes:
+      - ../zk-multiple-kafka-multiple/zoo1/data:/data
+      - ../zk-multiple-kafka-multiple/zoo1/datalog:/datalog
     environment:
         ZOO_MY_ID: 1
         ZOO_PORT: 2181
@@ -90,6 +93,9 @@ services:
     container_name: zoo2
     ports:
       - "2182:2182"
+    volumes:
+      - ../zk-multiple-kafka-multiple/zoo2/data:/data
+      - ../zk-multiple-kafka-multiple/zoo2/datalog:/datalog
     environment:
         ZOO_MY_ID: 2
         ZOO_PORT: 2182
@@ -103,6 +109,10 @@ services:
     container_name: zoo3
     ports:
       - "2183:2183"
+    volumes:
+      - ../zk-multiple-kafka-multiple/zoo3/data:/data
+      - ../zk-multiple-kafka-multiple/zoo3/datalog:/datalog
+
     environment:
         ZOO_MY_ID: 3
         ZOO_PORT: 2183
@@ -131,7 +141,10 @@ services:
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka1:19092
       CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2182,zoo3:2183"
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
-      CONFLUENT_METRICS_ENABLE: 'false'    
+      CONFLUENT_METRICS_ENABLE: 'false'
+    volumes:
+      - ./zk-multiple-kafka-multiple/kafka1/data:/var/lib/kafka/data
+     
     depends_on:
       - zoo1
       - zoo2
@@ -159,7 +172,10 @@ services:
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka2:19093
       CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2182,zoo3:2183"
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
-      CONFLUENT_METRICS_ENABLE: 'false'      
+      CONFLUENT_METRICS_ENABLE: 'false'
+    volumes:
+      - ./zk-multiple-kafka-multiple/kafka2/data:/var/lib/kafka/data
+     
     depends_on:
       - zoo1
       - zoo2
@@ -187,7 +203,11 @@ services:
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka3:19094
       CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: "zoo1:2181,zoo2:2182,zoo3:2183"
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
-      CONFLUENT_METRICS_ENABLE: 'false'         
+      CONFLUENT_METRICS_ENABLE: 'false'
+
+    volumes:
+      - ./zk-multiple-kafka-multiple/kafka3/data:/var/lib/kafka/data
+     
     depends_on:
       - zoo1
       - zoo2
