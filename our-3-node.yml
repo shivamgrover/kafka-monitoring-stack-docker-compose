@@ -122,7 +122,7 @@ services:
 
 
   kafka1:
-    image: confluentinc/cp-kafka:5.5.1
+    image: confluentinc/cp-kafka:latest
     hostname: kafka1
     container_name: kafka1
     ports:
@@ -153,7 +153,7 @@ services:
      - paritex-kakfa
 
   kafka2:
-    image: confluentinc/cp-kafka:5.5.1
+    image: confluentinc/cp-kafka:latest
     hostname: kafka2
     container_name: kafka2
     ports:
@@ -184,7 +184,7 @@ services:
      - paritex-kakfa
 
   kafka3:
-    image: confluentinc/cp-kafka:5.5.1
+    image: confluentinc/cp-kafka:latest
     hostname: kafka3
     container_name: kafka3
 
