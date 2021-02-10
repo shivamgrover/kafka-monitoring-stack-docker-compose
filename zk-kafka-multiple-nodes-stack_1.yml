@@ -53,7 +53,7 @@ services:
     networks:
       - paritex-kakfa
     depends_on:
-      - kafka101
+      - kafka1
 
   jmx-kafka102:
     image: "sscaling/jmx-prometheus-exporter"
@@ -67,7 +67,7 @@ services:
     networks:
       - paritex-kakfa
     depends_on:
-      - kafka102
+      - kafka2
 
   jmx-kafka103:
     image: "sscaling/jmx-prometheus-exporter"
@@ -81,7 +81,7 @@ services:
     networks:
       - paritex-kakfa
     depends_on:
-      - kafka103
+      - kafka3
 
   zoo1:
     image: confluentinc/cp-zookeeper:latest
