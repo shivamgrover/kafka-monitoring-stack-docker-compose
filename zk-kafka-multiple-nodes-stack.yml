@@ -44,7 +44,7 @@ services:
     environment:
      CONFIG_YML : "/etc/jmx_exporter/config.yml"
     volumes:
-     - ./etc/jmx_exporter/config_kafka101_1.yml:/etc/jmx_exporter/config.yml
+     - ./etc/jmx_exporter/config_kafka101.yml:/etc/jmx_exporter/config.yml
     container_name: jmx-kafka101
     depends_on:
      - kafka101
@@ -56,7 +56,7 @@ services:
     environment:
      CONFIG_YML : "/etc/jmx_exporter/config.yml"
     volumes:
-     - ./etc/jmx_exporter/config_kafka102_1.yml:/etc/jmx_exporter/config.yml
+     - ./etc/jmx_exporter/config_kafka102.yml:/etc/jmx_exporter/config.yml
     container_name: jmx-kafka102
     depends_on:
      - kafka102
@@ -68,7 +68,7 @@ services:
     environment:
      CONFIG_YML : "/etc/jmx_exporter/config.yml"
     volumes:
-     - ./etc/jmx_exporter/config_kafka103_1.yml:/etc/jmx_exporter/config.yml
+     - ./etc/jmx_exporter/config_kafka103.yml:/etc/jmx_exporter/config.yml
     container_name: jmx-kafka103
     depends_on:
      - kafka103

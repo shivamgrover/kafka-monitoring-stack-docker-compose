@@ -17,113 +17,124 @@ services:
   grafana:
     image: "grafana/grafana"
     ports:
-      - "3000:3000"
+     - "3000:3000"
     environment:
       GF_PATHS_DATA : /var/lib/grafana
       GF_SECURITY_ADMIN_PASSWORD : kafka
     volumes:
-      - ./grafana/provisioning:/etc/grafana/provisioning
-      - ./grafana/dashboards:/var/lib/grafana/dashboards
-    container_name: grafana
+     - ./grafana/provisioning:/etc/grafana/provisioning
+     - ./grafana/dashboards:/var/lib/grafana/dashboards
+    container_name: grafana   
+    networks:
+     - paritex-kakfa
     depends_on:
-      - prometheus
+     - prometheus
 
   prometheus:
     image: "prom/prometheus"
     ports:
-      - "9090:9090"
+     - "9090:9090"
     volumes:
-      - ./etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+     - ./etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     command: "--config.file=/etc/prometheus/prometheus.yml"
     container_name: prometheus
+    networks:
+     - paritex-kakfa
+   
 
   jmx-kafka101:
     image: "sscaling/jmx-prometheus-exporter"
-    networks:
-      - paritex-kakfa
     ports:
-      - "5556:5556"
+     - "5556:5556"
     environment:
-      CONFIG_YML : "/etc/jmx_exporter/config.yml"
+     CONFIG_YML : "/etc/jmx_exporter/config.yml"
     volumes:
-      - ./etc/jmx_exporter/config_kafka101.yml:/etc/jmx_exporter/config.yml
+     - ./etc/jmx_exporter/config_kafka101.yml:/etc/jmx_exporter/config.yml
     container_name: jmx-kafka101
+    networks:
+     - paritex-kakfa   
     depends_on:
-      - kafka1
+     - kafka1
 
   jmx-kafka102:
     image: "sscaling/jmx-prometheus-exporter"
-    networks:
-      - paritex-kakfa
     ports:
-      - "5557:5556"
+     - "5557:5556"
     environment:
-      CONFIG_YML : "/etc/jmx_exporter/config.yml"
+     CONFIG_YML : "/etc/jmx_exporter/config.yml"
     volumes:
-      - ./etc/jmx_exporter/config_kafka102.yml:/etc/jmx_exporter/config.yml
-    container_name: jmx-kafka102
+     - ./etc/jmx_exporter/config_kafka102.yml:/etc/jmx_exporter/config.yml
+    container_name: jmx-kafka102   
+    networks:
+     - paritex-kakfa
     depends_on:
-      - kafka2
+     - kafka2
 
   jmx-kafka103:
     image: "sscaling/jmx-prometheus-exporter"
-    networks:
-      - paritex-kakfa
     ports:
-      - "5558:5556"
+     - "5558:5556"
     environment:
-      CONFIG_YML : "/etc/jmx_exporter/config.yml"
+     CONFIG_YML : "/etc/jmx_exporter/config.yml"
     volumes:
-      - ./etc/jmx_exporter/config_kafka103.yml:/etc/jmx_exporter/config.yml
-    container_name: jmx-kafka103
-
+     - ./etc/jmx_exporter/config_kafka103.yml:/etc/jmx_exporter/config.yml
+    container_name: jmx-kafka103   
+    networks:
+     - paritex-kakfa
     depends_on:
-      - kafka3
+     - kafka3
 
   zoo1:
     image: confluentinc/cp-zookeeper:latest
     networks:
-      - paritex-kakfa
+     - paritex-kakfa   
     environment:
       ZOOKEEPER_SERVER_ID: 1
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
-      ZOOKEEPER_SERVERS: "localhost:22888:23888;localhost:32888:33888;localhost:42888:43888"
+      ZOOKEEPER_SERVERS: zoo1:22888:23888;zoo2:32888:33888;zoo3:42888:43888   
     ports:
-      - 2181:2181
-    container_name: zoo1
+     - 2181:2181
+    container_name: zookeeper1
+
   zoo2:
     image: confluentinc/cp-zookeeper:latest
     networks:
-      - paritex-kakfa
+     - paritex-kakfa
     environment:
       ZOOKEEPER_SERVER_ID: 2
       ZOOKEEPER_CLIENT_PORT: 2182
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
-      ZOOKEEPER_SERVERS: "localhost:22888:23888;localhost:32888:33888;localhost:42888:43888"
+      ZOOKEEPER_SERVERS: zoo1:22888:23888;zoo2:32888:33888;zoo3:42888:43888
+    
     ports:
-      - 2182:2182
-    container_name: zoo2
+     - 2182:2182
+    container_name: zookeeper2 
+
   zoo3:
     image: confluentinc/cp-zookeeper:latest
     networks:
-      - paritex-kakfa
+     - paritex-kakfa
     environment:
       ZOOKEEPER_SERVER_ID: 3
       ZOOKEEPER_CLIENT_PORT: 2183
       ZOOKEEPER_TICK_TIME: 2000
       ZOOKEEPER_INIT_LIMIT: 5
       ZOOKEEPER_SYNC_LIMIT: 2
-      ZOOKEEPER_SERVERS: "localhost:22888:23888;localhost:32888:33888;localhost:42888:43888"
+      ZOOKEEPER_SERVERS: zoo1:22888:23888;zoo2:32888:33888;zoo3:42888:43888   
     ports:
-      - 2183:2183
-    container_name: zoo3
+     - 2183:2183
+    container_name: zookeeper3   
+
   kafka1:
     image: confluentinc/cp-kafka:latest
+    hostname: kafka1
+    networks:
+     - paritex-kakfa
     depends_on:
       - zoo1
       - zoo2
@@ -131,17 +142,14 @@ services:
     ports:
       - 9092:9092
       - 9992:9992
-    container_name: kafka1
-    networks:
-      - paritex-kakfa
+    container_name: kafka1   
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_JMX_PORT: 9992
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka1:29092,PLAINTEXT_HOST://kafka1:9092
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
-      KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
-      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
       KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka1:29092
       CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
@@ -150,6 +158,9 @@ services:
 
   kafka2:
     image: confluentinc/cp-kafka:latest
+    hostname: kafka2
+    networks:
+     - paritex-kakfa   
     depends_on:
       - zoo1
       - zoo2
@@ -158,9 +169,6 @@ services:
       - 9093:9093
       - 9993:9993
     container_name: kafka2
-    networks:
-      - paritex-kakfa
-
     environment:
       KAFKA_BROKER_ID: 2
       KAFKA_JMX_PORT: 9993
@@ -169,14 +177,17 @@ services:
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka2:29093
       CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
       CONFLUENT_METRICS_ENABLE: 'false'
 
-  kafka3:
+  kafka3:  
     image: confluentinc/cp-kafka:latest
+    hostname: kafka3    
+    networks:
+     - paritex-kakfa
     depends_on:
       - zoo1
       - zoo2
@@ -185,23 +196,37 @@ services:
       - 9094:9094
       - 9994:9994
     container_name: kafka3
-    networks:
-      - paritex-kakfa
     environment:
-      KAFKA_BROKER_ID: 3
+      KAFKA_BROKER_ID: 103
       KAFKA_JMX_PORT: 9994
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:29094,PLAINTEXT_HOST://kafka3:9094
       KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,PLAINTEXT_HOST:PLAINTEXT
       KAFKA_INTER_BROKER_LISTENER_NAME: PLAINTEXT
       KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 3
-      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 3
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: 1
       CONFLUENT_METRICS_REPORTER_BOOTSTRAP_SERVERS: kafka3:29094
       CONFLUENT_METRICS_REPORTER_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
       CONFLUENT_METRICS_REPORTER_TOPIC_REPLICAS: 1
-      CONFLUENT_METRICS_ENABLE: 'false'
+      CONFLUENT_METRICS_ENABLE: 'false'  
 
-
+  kafdrop:
+    image: obsidiandynamics/kafdrop   
+    restart: "no"
+    container_name: kafdrop 
+    networks:
+     - paritex-kakfa  
+    ports:
+      - 9000:9000
+    environment:
+      KAFKA_BROKERCONNECT: "kafka1:29092,kafka2:29093,kafka3:29094"
+      JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
+    depends_on:
+      - "kafka1"
+      - "kafka2"
+      - "kafka3"
 networks:
   paritex-kakfa:
-    driver: bridge
+   driver: bridge
+
+           
