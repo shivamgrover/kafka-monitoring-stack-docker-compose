@@ -234,7 +234,7 @@ services:
     networks:
      - paritex-kakfa  
     ports:
-      - 9900:9900
+      - 9000:9000
     environment:
       KAFKA_BROKERCONNECT: "kafka1:29092,kafka2:29093,kafka3:29094"
       JVM_OPTS: "-Xms16M -Xmx48M -Xss180K -XX:-TieredCompilation -XX:+UseStringDeduplication -noverify"
