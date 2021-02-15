@@ -99,8 +99,8 @@ services:
      - 2181:2181
     container_name: zookeeper1
     volumes:
-      - ./zk-multiple-kafka-multiple/zoo1/data:/data
-      - ./zk-multiple-kafka-multiple/zoo1/datalog:/datalog
+      - ../zk-multiple-kafka-multiple/zoo1/data:/data
+      - ../zk-multiple-kafka-multiple/zoo1/datalog:/datalog
 
   zoo2:
     image: confluentinc/cp-zookeeper:latest
@@ -117,8 +117,8 @@ services:
      - 2182:2182
     container_name: zookeeper2
     volumes:
-      - ./zk-multiple-kafka-multiple/zoo2/data:/data
-      - ./zk-multiple-kafka-multiple/zoo2/datalog:/datalog 
+      - ../zk-multiple-kafka-multiple/zoo2/data:/data
+      - ../zk-multiple-kafka-multiple/zoo2/datalog:/datalog 
 
   zoo3:
     image: confluentinc/cp-zookeeper:latest
@@ -135,8 +135,8 @@ services:
      - 2183:2183
     container_name: zookeeper3
     volumes:
-      - ./zk-multiple-kafka-multiple/zoo3/data:/data
-      - ./zk-multiple-kafka-multiple/zoo3/datalog:/datalog    
+      - ../zk-multiple-kafka-multiple/zoo3/data:/data
+      - ../zk-multiple-kafka-multiple/zoo3/datalog:/datalog    
 
   kafka1:
     image: confluentinc/cp-kafka:latest
@@ -152,8 +152,8 @@ services:
       - 9992:9992
     container_name: kafka1   
     volumes:
-      - ./zk-multiple-kafka-multiple/kafka1/data:/var/lib/kafka/data
-      - ./.env/server.properties:/etc/server.properties  
+      - ../zk-multiple-kafka-multiple/kafka1/data:/var/lib/kafka/data
+      - ../.env/server.properties:/etc/server.properties  
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_JMX_PORT: 9992
