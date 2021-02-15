@@ -22,8 +22,8 @@ services:
       GF_PATHS_DATA : /var/lib/grafana
       GF_SECURITY_ADMIN_PASSWORD : kafka
     volumes:
-     - ./grafana/provisioning:/etc/grafana/provisioning
-     - ./grafana/dashboards:/var/lib/grafana/dashboards
+     - ./kafka-monitoring-stack-docker-compose/grafana/provisioning:/etc/grafana/provisioning
+     - ./kafka-monitoring-stack-docker-compose/grafana/dashboards:/var/lib/grafana/dashboards
     container_name: grafana   
     networks:
      - paritex-kakfa
@@ -35,7 +35,7 @@ services:
     ports:
      - "9090:9090"
     volumes:
-     - ./etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+     - ./kafka-monitoring-stack-docker-compose/etc/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
     command: "--config.file=/etc/prometheus/prometheus.yml"
     container_name: prometheus
     networks:
@@ -49,7 +49,7 @@ services:
     environment:
      CONFIG_YML : "/etc/jmx_exporter/config.yml"
     volumes:
-     - ./etc/jmx_exporter/config_kafka101.yml:/etc/jmx_exporter/config.yml
+     - ./kafka-monitoring-stack-docker-compose/etc/jmx_exporter/config_kafka101.yml:/etc/jmx_exporter/config.yml
     container_name: jmx-kafka101
     networks:
      - paritex-kakfa   
@@ -63,7 +63,7 @@ services:
     environment:
      CONFIG_YML : "/etc/jmx_exporter/config.yml"
     volumes:
-     - ./etc/jmx_exporter/config_kafka102.yml:/etc/jmx_exporter/config.yml
+     - ./kafka-monitoring-stack-docker-compose/etc/jmx_exporter/config_kafka102.yml:/etc/jmx_exporter/config.yml
     container_name: jmx-kafka102   
     networks:
      - paritex-kakfa
@@ -77,7 +77,7 @@ services:
     environment:
      CONFIG_YML : "/etc/jmx_exporter/config.yml"
     volumes:
-     - ./etc/jmx_exporter/config_kafka103.yml:/etc/jmx_exporter/config.yml
+     - ./kafka-monitoring-stack-docker-compose/etc/jmx_exporter/config_kafka103.yml:/etc/jmx_exporter/config.yml
     container_name: jmx-kafka103   
     networks:
      - paritex-kakfa
@@ -99,8 +99,8 @@ services:
      - 2181:2181
     container_name: zookeeper1
     volumes:
-      - ../zk-multiple-kafka-multiple/zoo1/data:/data
-      - ../zk-multiple-kafka-multiple/zoo1/datalog:/datalog
+      - ./zk-multiple-kafka-multiple/zoo1/data:/data
+      - ./zk-multiple-kafka-multiple/zoo1/datalog:/datalog
 
   zoo2:
     image: confluentinc/cp-zookeeper:latest
@@ -117,8 +117,8 @@ services:
      - 2182:2182
     container_name: zookeeper2
     volumes:
-      - ../zk-multiple-kafka-multiple/zoo2/data:/data
-      - ../zk-multiple-kafka-multiple/zoo2/datalog:/datalog 
+      - ./zk-multiple-kafka-multiple/zoo2/data:/data
+      - ./zk-multiple-kafka-multiple/zoo2/datalog:/datalog 
 
   zoo3:
     image: confluentinc/cp-zookeeper:latest
@@ -135,8 +135,8 @@ services:
      - 2183:2183
     container_name: zookeeper3
     volumes:
-      - ../zk-multiple-kafka-multiple/zoo3/data:/data
-      - ../zk-multiple-kafka-multiple/zoo3/datalog:/datalog    
+      - ./zk-multiple-kafka-multiple/zoo3/data:/data
+      - ./zk-multiple-kafka-multiple/zoo3/datalog:/datalog    
 
   kafka1:
     image: confluentinc/cp-kafka:latest
@@ -152,8 +152,8 @@ services:
       - 9992:9992
     container_name: kafka1   
     volumes:
-      - ../zk-multiple-kafka-multiple/kafka1/data:/var/lib/kafka/data
-      - ../.env/server.properties:/etc/server.properties  
+      - ./zk-multiple-kafka-multiple/kafka1/data:/var/lib/kafka/data
+      - ./.env/server.properties:/etc/server.properties  
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_JMX_PORT: 9992
@@ -182,8 +182,8 @@ services:
       - 9993:9993
     container_name: kafka2
     volumes:
-      - ../zk-multiple-kafka-multiple/kafka2/data:/var/lib/kafka/data
-      - ../.env/server.properties:/etc/server.properties
+      - ./zk-multiple-kafka-multiple/kafka2/data:/var/lib/kafka/data
+      - ./.env/server.properties:/etc/server.properties
     environment:
       KAFKA_BROKER_ID: 2
       KAFKA_JMX_PORT: 9993
@@ -213,8 +213,8 @@ services:
       - 9994:9994
     container_name: kafka3
     volumes:
-      - ../zk-multiple-kafka-multiple/kafka3/data:/var/lib/kafka/data
-      - ../.env/server.properties:/etc/server.properties
+      - ./zk-multiple-kafka-multiple/kafka3/data:/var/lib/kafka/data
+      - ./.env/server.properties:/etc/server.properties
     environment:
       KAFKA_BROKER_ID: 103
       KAFKA_JMX_PORT: 9994
