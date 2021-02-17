@@ -216,7 +216,7 @@ services:
       - ../zk-multiple-kafka-multiple/kafka3/data:/var/lib/kafka/data1
       - ../.env/server.properties:/etc/server.properties
     environment:
-      KAFKA_BROKER_ID: 103
+      KAFKA_BROKER_ID: 3
       KAFKA_JMX_PORT: 9994
       KAFKA_ZOOKEEPER_CONNECT: zoo1:2181,zoo2:2182,zoo3:2183
       KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka3:29094,PLAINTEXT_HOST://kafka3:9094
